@@ -12,40 +12,41 @@ var usuario = {
     sala: params.get('sala')
 };
 
-//los on son para escuchar información que envía el server
-socket.on('connect', function() {
 
-    console.log('Conectado al Server');
+
+socket.on('connect', function() {
+    console.log('Conectado al servidor');
+
     socket.emit('entrarChat', usuario, function(resp) {
-        console.log('Usuarios Conectados: ', resp);
+        //console.log('Usuarios conectados', resp);
+        renderizarUsuarios(resp);
     });
 
 });
 
+// escuchar
 socket.on('disconnect', function() {
-    console.log('Desconectado del Server');
+
+    console.log('Se perdió conexión con el servidor');
+
 });
 
-//Los emits son para enviar información al server
-socket.emit('enviarMensaje', {
-    usuario: 'Optimus Neo',
-    mensaje: 'Hola Mundo'
-}, function(resp) {
-    console.log('Resp Server:', resp);
-});
-
-//Escuchar la información del server
+// Escuchar información
 socket.on('crearMensaje', function(mensaje) {
-    console.log('Información del Server:', mensaje);
+    //console.log('Servidor:', mensaje);
+    renderizarMensajes(mensaje, false);
+    scrollBottom();
 });
 
-//Escuchar cambios de usuarios
-//Escuchar cuando un usuario entra o sale del chat
+// Escuchar cambios de usuarios
+// cuando un usuario entra o sale del chat
 socket.on('listaPersona', function(personas) {
-    console.log(personas);
+    renderizarUsuarios(personas);
 });
 
-//Mensajes privados (Acción de escuchar al cliente con su mensaje privado)
+// Mensajes privados
 socket.on('mensajePrivado', function(mensaje) {
-    console.log('Mensaje privado: ', mensaje);
+
+    console.log('Mensaje Privado:', mensaje);
+
 });
